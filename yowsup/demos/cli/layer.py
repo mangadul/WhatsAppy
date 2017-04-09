@@ -8,6 +8,7 @@ from yowsup.common import YowConstants
 import datetime
 import os
 import logging
+import tempfile
 from yowsup.layers.protocol_groups.protocolentities      import *
 from yowsup.layers.protocol_presence.protocolentities    import *
 from yowsup.layers.protocol_messages.protocolentities    import *
