@@ -68,7 +68,7 @@ class ImageDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
         return node
 
     def getExtension(self):
-        extensions = self.guess_all_extensions(self.mimeType, False)
+        extensions = mimetypes.guess_all_extensions(self.mimeType, False)
         if not extensions:
             return None
         return extensions[0]
