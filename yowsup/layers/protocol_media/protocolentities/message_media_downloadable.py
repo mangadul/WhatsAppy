@@ -75,10 +75,13 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
     def getMimeType(self):
         return self.mimeType
 
-    def getExtention(self):
-	extensions = mimetypes.guess_all_extensions(self.mimeType, False)
-	if not extensions:
-		return None
+	def getFileName(self):
+		return self.fileName
+	
+	def getExtension(self):
+		extensions = mimetypes.guess_all_extensions(self.mimeType, False)
+		if not extensions:
+			return None
         return extensions[0]
 
     def setDownloadableMediaProps(self, mimeType, fileHash, url, ip, size, fileName, mediaKey):
