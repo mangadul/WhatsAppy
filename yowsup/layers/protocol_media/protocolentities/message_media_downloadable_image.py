@@ -3,6 +3,7 @@ from .message_media_downloadable import DownloadableMediaMessageProtocolEntity
 from .builder_message_media_downloadable import DownloadableMediaMessageBuilder
 from yowsup.layers.protocol_messages.proto.wa_pb2 import ImageMessage
 from yowsup.common.tools import ImageTools
+import mimetypes
 
 class ImageDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtocolEntity):
     '''
@@ -65,6 +66,12 @@ class ImageDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
             mediaNode.setAttribute("caption", self.caption)
 
         return node
+
+    def getExtention(self):
+        extensions = self.guess_all_extensions(self.mimeType, False)
+        if not extensions:
+            return None
+        return extensions[0]
 
     def toProtobufMessage(self):
         image_message = ImageMessage()
