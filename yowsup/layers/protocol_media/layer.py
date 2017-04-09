@@ -6,6 +6,8 @@ from .protocolentities import LocationMediaMessageProtocolEntity
 from .protocolentities import VCardMediaMessageProtocolEntity
 from .protocolentities import RequestUploadIqProtocolEntity, ResultRequestUploadIqProtocolEntity
 from yowsup.layers.protocol_iq.protocolentities import IqProtocolEntity, ErrorIqProtocolEntity
+from .protocolentities import DocumentDownloadableMediaMessageProtocolEntity
+from .protocolentities import UrlMediaMessageProtocolEntity
 
 class YowMediaProtocolLayer(YowProtocolLayer):
 
@@ -46,6 +48,12 @@ class YowMediaProtocolLayer(YowProtocolLayer):
             elif mediaNode.getAttributeValue("type") == "video":
                 entity = VideoDownloadableMediaMessageProtocolEntity.fromProtocolTreeNode(node)
                 self.toUpper(entity)
+            elif mediaNode.getAttributeValue("type") == "url":
+                entity = UrlMediaMessageProtocolEntity.fromProtocolTreeNode(node)
+                self.toUpper(entity)
+            elif mediaNode.getAttributeValue("type") == "document":
+                entity = DocumentDownloadableMediaMessageProtocolEntity.fromProtocolTreeNode(node)
+                self.toUpper(entity)                
             elif mediaNode.getAttributeValue("type") == "location":
                 entity = LocationMediaMessageProtocolEntity.fromProtocolTreeNode(node)
                 self.toUpper(entity)

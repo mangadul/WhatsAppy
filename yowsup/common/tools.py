@@ -10,6 +10,7 @@ import base64
 import hashlib
 import os.path, mimetypes
 from .optionalmodules import PILOptionalModule, FFVideoOptionalModule
+from ffvideo import VideoStream
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +164,7 @@ class MimeTools:
         if mimeType is None:
             raise Exception("Unsupported/unrecognized file type for: "+filepath);
         return mimeType
-
+"""
 class VideoTools:
     @staticmethod
     def getVideoProperties(videoFile):
@@ -182,3 +183,19 @@ class VideoTools:
             preview = ImageTools.generatePreviewFromImage(path)
             os.remove(path)
             return preview
+"""
+
+class VideoTools:
+    @staticmethod
+    def getVideoProperties(videoFile):
+        s = VideoStream(videoFile)
+        return s.width, s.height, s.bitrate, s.duration
+
+    @staticmethod
+    def generatePreviewFromVideo(videoFile):
+        fd, path = tempfile.mkstemp('.jpg')
+        stream = VideoStream(videoFile)
+        stream.get_frame_at_sec(0).image().save(path)
+        preview = ImageTools.generatePreviewFromImage(path)
+        os.remove(path)
+        return preview            

@@ -236,6 +236,7 @@ class AxolotlReceivelayer(AxolotlBaseLayer):
 
         self.toUpper(messageNode)
 
+    """
     def handleUrlMessage(self, originalEncNode, urlMessage):
         #convert to ??
         pass
@@ -243,13 +244,44 @@ class AxolotlReceivelayer(AxolotlBaseLayer):
     def handleDocumentMessage(self, originalEncNode, documentMessage):
         #convert to ??
         pass
+    """
+
+    def handleUrlMessage(self, originalEncNode, urlMessage):
+        messageNode = copy.deepcopy(originalEncNode)
+        messageNode["type"] = "media"
+        mediaNode = ProtocolTreeNode("media", {
+            "type": "url",
+            "text": urlMessage.text,
+            "match": urlMessage.matched_text,
+            "url": urlMessage.canonical_url,
+            "description": urlMessage.description,
+            "title": urlMessage.title
+        }, data = urlMessage.jpeg_thumbnail)
+        messageNode.addChild(mediaNode)
+        self.toUpper(messageNode)
+
+    def handleDocumentMessage(self, originalEncNode, documentMessage):
+        messageNode = copy.deepcopy(originalEncNode)
+        messageNode["type"] = "media"
+        mediaNode = ProtocolTreeNode("media", {
+            "type": "document",
+            "url": documentMessage.url,
+            "mimetype": documentMessage.mime_type,
+            "title": documentMessage.title,
+            "filehash": documentMessage.file_sha256,
+            "size": str(documentMessage.file_length),
+            "pages": str(documentMessage.page_count),
+            "mediakey": documentMessage.media_key
+        }, data = documentMessage.jpeg_thumbnail)
+        messageNode.addChild(mediaNode)
+        self.toUpper(messageNode)
 
     def handleLocationMessage(self, originalEncNode, locationMessage):
         messageNode = copy.deepcopy(originalEncNode)
         messageNode["type"] = "media"
         mediaNode = ProtocolTreeNode("media", {
             "latitude": locationMessage.degrees_latitude,
-            "longitude": locationMessage.degress_longitude,
+            "longitude": locationMessage.degrees_longitude,
             "name": "%s %s" % (locationMessage.name, locationMessage.address),
             "url": locationMessage.url,
             "encoding": "raw",
@@ -267,6 +299,46 @@ class AxolotlReceivelayer(AxolotlBaseLayer):
             ProtocolTreeNode("vcard", {"name": contactMessage.display_name}, data = contactMessage.vcard)
         ] )
         messageNode.addChild(mediaNode)
+        self.toUpper(messageNode)
+
+    def handleAudioMessage(self, originalEncNode, audioMessage):
+        messageNode = copy.deepcopy(originalEncNode)
+        messageNode["type"] = "media"
+        mediaNode = ProtocolTreeNode("media", {
+            "type": "audio",
+            "filehash": audioMessage.file_sha256,
+            "size": str(audioMessage.file_length),
+            "url": audioMessage.url,
+            "mimetype": audioMessage.mime_type,
+            "duration": str(audioMessage.duration),
+            "seconds": str(audioMessage.duration),
+            "encoding": "raw",
+            "file": "enc",
+            "ip": "0",
+            "mediakey": audioMessage.media_key
+        })
+        messageNode.addChild(mediaNode)
+        self.toUpper(messageNode)
+
+    def handleVideoMessage(self, originalEncNode, videoMessage):
+        messageNode = copy.deepcopy(originalEncNode)
+        messageNode["type"] = "media"
+        mediaNode = ProtocolTreeNode("media", {
+            "type": "video",
+            "filehash": videoMessage.file_sha256,
+            "size": str(videoMessage.file_length),
+            "url": videoMessage.url,
+            "mimetype": videoMessage.mime_type,
+            "duration": str(videoMessage.duration),
+            "seconds": str(videoMessage.duration),
+            "caption": videoMessage.caption,
+            "encoding": "raw",
+            "file": "enc",
+            "ip": "0",
+            "mediakey": videoMessage.media_key
+        }, data = videoMessage.jpeg_thumbnail)
+        messageNode.addChild(mediaNode)
+
         self.toUpper(messageNode)
 
     def getSessionCipher(self, recipientId):
