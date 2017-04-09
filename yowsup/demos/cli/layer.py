@@ -521,6 +521,7 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
     def getTextMessageBody(self, message):
         return message.getBody()
 
+"""
     def getMediaMessageBody(self, message):
         if message.getMediaType() in ("image", "audio", "video"):
             return self.getDownloadableMediaMessageBody(message)
@@ -534,6 +535,24 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
             media_size = message.getMediaSize(),
             media_url = message.getMediaUrl()
             )
+"""
+
+    def getMediaMessageBody(self, message):
+        if message.getMediaType() in ("image", "audio", "video", "document"):
+            return self.getDownloadableMediaMessageBody(message)
+        else:
+            return "[Media Type: %s] %s" % (message.getMediaType(), message)
+
+def getDownloadableMediaMessageBody(self, message):
+        filename = "%s/%s%s"%(tempfile.gettempdir(),message.getId(),message.getExtension())
+        with open(filename, 'wb') as f:
+            f.write(message.getMediaContent())
+        return "[Media Type:{media_type}, Size:{media_size}, URL:{media_url}, FILE:{fname}]".format(
+            media_type=message.getMediaType(),
+            media_size=message.getMediaSize(),
+            media_url=message.getMediaUrl(),
+            fname=filename
+        )
 
     def doSendMedia(self, mediaType, filePath, url, to, ip = None, caption = None):
         if mediaType == RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE:

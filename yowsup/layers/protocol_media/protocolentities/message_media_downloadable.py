@@ -11,6 +11,8 @@ from axolotl.kdf.hkdfv3 import HKDFv3
 from axolotl.util.byteutil import ByteUtil
 import binascii
 import base64
+import mimetypes
+
 class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
     '''
     <message t="{{TIME_STAMP}}" from="{{CONTACT_JID}}"
@@ -72,6 +74,12 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
 
     def getMimeType(self):
         return self.mimeType
+
+    def getExtention(self):
+	extensions = mimetypes.guess_all_extensions(self.mimeType, False)
+	if not extensions:
+		return None
+        return extensions[0]
 
     def setDownloadableMediaProps(self, mimeType, fileHash, url, ip, size, fileName, mediaKey):
         self.mimeType   = mimeType
