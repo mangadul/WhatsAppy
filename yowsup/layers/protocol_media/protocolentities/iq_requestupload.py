@@ -15,6 +15,7 @@ class RequestUploadIqProtocolEntity(IqProtocolEntity):
     MEDIA_TYPE_IMAGE = "image"
     MEDIA_TYPE_VIDEO = "video"
     MEDIA_TYPE_AUDIO = "audio"
+    MEDIA_TYPE_DOCUMENT = "document"
     XMLNS = "w:m"
 
     TYPES_MEDIA = (MEDIA_TYPE_AUDIO, MEDIA_TYPE_IMAGE, MEDIA_TYPE_VIDEO)
