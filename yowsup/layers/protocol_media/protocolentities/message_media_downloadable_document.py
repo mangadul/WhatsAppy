@@ -46,13 +46,13 @@ class DocumentDownloadableMediaMessageProtocolEntity(DownloadableMediaMessagePro
 
     def getTitle(self):
         return self.title
-    
+	
 	def getExtension(self):
 		extensions = mimetypes.guess_all_extensions(self.mimeType, False)
 		if not extensions:
 			return None
-        return extensions[0]
-    
+		return extensions[0]
+	
     def toProtocolTreeNode(self):
         node = super(DocumentDownloadableMediaMessageProtocolEntity, self).toProtocolTreeNode()
         mediaNode = node.getChild("media")
