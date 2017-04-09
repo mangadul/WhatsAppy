@@ -393,6 +393,10 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
     def image_send(self, number, path, caption = None):
         self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE)
 
+    @clicmd("Send an document with optional caption")
+    def document_send(self, number, path, caption = None):
+        self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_DOCUMENT)
+        
     @clicmd("Send audio file")
     def audio_send(self, number, path):
         self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_AUDIO)
