@@ -521,7 +521,7 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
     def getTextMessageBody(self, message):
         return message.getBody()
 
-"""
+    """
     def getMediaMessageBody(self, message):
         if message.getMediaType() in ("image", "audio", "video"):
             return self.getDownloadableMediaMessageBody(message)
@@ -535,7 +535,7 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
             media_size = message.getMediaSize(),
             media_url = message.getMediaUrl()
             )
-"""
+    """
 
     def getMediaMessageBody(self, message):
         if message.getMediaType() in ("image", "audio", "video", "document"):
@@ -543,7 +543,7 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
         else:
             return "[Media Type: %s] %s" % (message.getMediaType(), message)
 
-def getDownloadableMediaMessageBody(self, message):
+    def getDownloadableMediaMessageBody(self, message):
         filename = "%s/%s%s"%(tempfile.gettempdir(),message.getId(),message.getExtension())
         with open(filename, 'wb') as f:
             f.write(message.getMediaContent())
