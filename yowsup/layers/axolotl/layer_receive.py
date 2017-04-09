@@ -173,7 +173,7 @@ class AxolotlReceivelayer(AxolotlBaseLayer):
             print("DUMP:")
             print(serializedData)
             print([s for s in serializedData])
-            print([ord(s) for s in serializedData])
+            #print([ord(s) for s in serializedData])
             raise
         if not m or not serializedData:
             raise ValueError("Empty message")
@@ -198,7 +198,15 @@ class AxolotlReceivelayer(AxolotlBaseLayer):
         elif m.HasField("image_message"):
             handled = True
             self.handleImageMessage(node, m.image_message)
-
+        elif m.HasField("document_message"):
+            handled = True
+            self.handleDocumentMessage(node, m.document_message)
+        elif m.HasField("audio_message"):
+            handled = True
+            self.handleAudioMessage(node, m.audio_message)
+        elif m.HasField("video_message"):
+            handled = True
+            self.handleVideoMessage(node, m.video_message)
         if not handled:
             print(m)
             raise ValueError("Unhandled")

@@ -10,7 +10,7 @@ import base64
 import hashlib
 import os.path, mimetypes
 from .optionalmodules import PILOptionalModule, FFVideoOptionalModule
-from ffvideo import VideoStream
+#from ffvideo import VideoStream
 
 logger = logging.getLogger(__name__)
 
