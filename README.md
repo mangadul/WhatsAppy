@@ -100,4 +100,10 @@ As of January 1, 2015 yowsup is licensed under the GPLv3+: http://www.gnu.org/li
 # WhatsAppy
 WhatsApp Python - forked from https://github.com/tgalal/yowsup
 
-Added https://github.com/jlguardi/yowsup
+Added document, audio & video message forked from https://github.com/jlguardi/yowsup
+
+Example run yowsup in your terminal:
+
+yowsup-cli demos --yowsup --login 6281320203981:NDkxNTIyNTI1NjAyMkBzLndoYXRzYXBwLm5ldA==
+
+to run yowsup as microservice please see https://github.com/EliasKotlyar/yowsup-microservice
