@@ -2,6 +2,7 @@ from yowsup.structs import ProtocolEntity, ProtocolTreeNode
 from .message_media_downloadable import DownloadableMediaMessageProtocolEntity
 from yowsup.common.tools import VideoTools
 from .builder_message_media_downloadable import DownloadableMediaMessageBuilder
+import mimetypes
 
 class VideoDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtocolEntity):
     '''
@@ -71,6 +72,12 @@ class VideoDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
 
     def getCaption(self):
         return self.caption
+
+    def getExtension(self):
+        extensions = mimetypes.guess_all_extensions(self.mimeType, False)
+        if not extensions:
+            return None
+        return extensions[0]
 
     def toProtocolTreeNode(self):
         node = super(VideoDownloadableMediaMessageProtocolEntity, self).toProtocolTreeNode()

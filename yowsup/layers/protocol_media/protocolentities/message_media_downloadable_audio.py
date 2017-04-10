@@ -1,6 +1,8 @@
 from yowsup.structs import ProtocolEntity, ProtocolTreeNode
 from .message_media_downloadable import DownloadableMediaMessageProtocolEntity
 from .builder_message_media_downloadable import DownloadableMediaMessageBuilder
+import mimetypes
+
 class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtocolEntity):
     '''
     <message t="{{TIME_STAMP}}" from="{{CONTACT_JID}}"
@@ -52,6 +54,12 @@ class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
         self.encoding  = encoding
         self.origin    = origin
         self.seconds   = seconds
+
+    def getExtension(self):
+        extensions = mimetypes.guess_all_extensions(self.mimeType, False)
+        if not extensions:
+            return None
+        return extensions[0]
 
     def toProtocolTreeNode(self):
         node = super(AudioDownloadableMediaMessageProtocolEntity, self).toProtocolTreeNode()
