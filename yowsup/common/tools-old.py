@@ -1,16 +1,16 @@
 import time,datetime,re, hashlib
+import calendar
 from dateutil import tz
 import os
 from .constants import YowConstants
 import codecs, sys
-import json
 import logging
 import tempfile
 import base64
 import hashlib
 import os.path, mimetypes
-from pkg_resources import resource_string
-from subprocess import CalledProcessError, check_output
+from .optionalmodules import PILOptionalModule, FFVideoOptionalModule
+#from ffvideo import VideoStream
 
 logger = logging.getLogger(__name__)
 
@@ -109,51 +109,18 @@ class TimeTools:
 
     @staticmethod
     def utcTimestamp():
-        #utc = tz.gettz('UTC')
         utcNow = datetime.datetime.utcnow()
-        return TimeTools.datetimeToTimestamp(utcNow)
+        return calendar.timegm(utcNow.timetuple())
 
     @staticmethod
     def datetimeToTimestamp(dt):
         return time.mktime(dt.timetuple())
 
-
-class ModuleTools:
-    @staticmethod
-    def INSTALLED_FFVIDEO():
-        try:
-            import ffvideo
-            return True
-        except ImportError:
-            return False
-    @staticmethod
-    def INSTALLED_EXIFTOOL():
-        try:
-            check_output(["exiftool", "-ver"])
-            return True
-        except OSError:
-            return False
-    @staticmethod
-    def INSTALLED_PIL():
-        try:
-            import PIL
-            return True
-        except ImportError:
-            return False
-    @staticmethod
-    def INSTALLED_AXOLOTL():
-        try:
-            import axolotl
-            return True
-        except ImportError:
-            return False
-
 class ImageTools:
-
     @staticmethod
     def scaleImage(infile, outfile, imageFormat, width, height):
-        if ModuleTools.INSTALLED_PIL():
-            from PIL import Image
+        with PILOptionalModule() as imp:
+            Image = imp("Image")
             im = Image.open(infile)
             #Convert P mode images
             if im.mode != "RGB":
@@ -161,24 +128,19 @@ class ImageTools:
             im.thumbnail((width, height))
             im.save(outfile, imageFormat)
             return True
-        else:
-            logger.warn("Python PIL library not installed")
-            return False
-
+        return False
 
     @staticmethod
     def getImageDimensions(imageFile):
-        if ModuleTools.INSTALLED_PIL():
-            from PIL import Image
+        with PILOptionalModule() as imp:
+            Image = imp("Image")
             im = Image.open(imageFile)
             return im.size
-        else:
-            logger.warn("Python PIL library not installed")
 
     @staticmethod
     def generatePreviewFromImage(image):
         fd, path = tempfile.mkstemp()
-        
+
         preview = None
         if ImageTools.scaleImage(image, path, "JPEG", YowConstants.PREVIEW_WIDTH, YowConstants.PREVIEW_HEIGHT):
             fileObj = os.fdopen(fd, "rb+")
@@ -189,7 +151,7 @@ class ImageTools:
         return preview
 
 class MimeTools:
-    MIME_FILE = resource_string(__name__, 'mime.types')
+    MIME_FILE = os.path.join(os.path.dirname(__file__), 'mime.types')
     mimetypes.init() # Load default mime.types
     try:
         mimetypes.init([MIME_FILE]) # Append whatsapp mime.types
@@ -202,48 +164,38 @@ class MimeTools:
         if mimeType is None:
             raise Exception("Unsupported/unrecognized file type for: "+filepath);
         return mimeType
+"""
+class VideoTools:
+    @staticmethod
+    def getVideoProperties(videoFile):
+        with FFVideoOptionalModule() as imp:
+            VideoStream = imp("VideoStream")
+            s = VideoStream(videoFile)
+            return s.width, s.height, s.bitrate, s.duration #, s.codec_name
 
     @staticmethod
-    def getExtension(mimetype):
-        ext = mimetypes.guess_extension(mimetype.split(';')[0])
-        if ext is None:
-            raise Exception("Unsupported/unrecognized mimetype: "+mimetype);
-        return ext
-
+    def generatePreviewFromVideo(videoFile):
+        with FFVideoOptionalModule() as imp:
+            VideoStream = imp("VideoStream")
+            fd, path = tempfile.mkstemp('.jpg')
+            stream = VideoStream(videoFile)
+            stream.get_frame_at_sec(0).image().save(path)
+            preview = ImageTools.generatePreviewFromImage(path)
+            os.remove(path)
+            return preview
+"""
 
 class VideoTools:
-	
-	@staticmethod
-	def getVideoProperties(videoFile):
-		if ModuleTools.INSTALLED_FFVIDEO():
-			from ffvideo import VideoStream
-			s = VideoStream(videoFile)
-			return s.width, s.height, s.bitrate, s.duration #, s.codec_name
-                elif ModuleTools.INSTALLED_EXIFTOOL():
-                    try:
-                        result = json.loads(check_output(["exiftool", "-j", "-n", videoFile]))[0]
-                    except CalledProcessError:
-                        logger.warn("exiftool returned non-zero status for video %s", videoFile)
-                    except (IndexError, ValueError):
-                        logger.warn("Failed reading exiftool result for video %s", videoFile)
-                    else:
-                        try:
-                            return result["ImageWidth"], result["ImageHeight"], \
-                                    result["AvgBitrate"], result["Duration"]
-                        except KeyError:
-                            logger.warn("Failed reading video properties from exiftool JSON")
-		else:
-			logger.warn("None of [Python ffvideo library, exiftool] installed")
+    @staticmethod
+    def getVideoProperties(videoFile):
+        s = VideoStream(videoFile)
+        return s.width, s.height, s.bitrate, s.duration
 
-	@staticmethod
-	def generatePreviewFromVideo(videoFile):
-		if ModuleTools.INSTALLED_FFVIDEO():
-			from ffvideo import VideoStream
-			fd, path = tempfile.mkstemp('.jpg')
-			stream = VideoStream(videoFile)
-			stream.get_frame_at_sec(0).image().save(path)
-			preview = ImageTools.generatePreviewFromImage(path)
-			os.remove(path)
-			return preview		
-		else:
-			logger.warn("Python ffvideo library not installed")
+    @staticmethod
+    def generatePreviewFromVideo(videoFile):
+        fd, path = tempfile.mkstemp('.jpg')
+        stream = VideoStream(videoFile)
+        stream.get_frame_at_sec(0).image().save(path)
+        preview = ImageTools.generatePreviewFromImage(path)
+        os.remove(path)
+        return preview            
