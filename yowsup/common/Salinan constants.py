@@ -19,7 +19,6 @@ class YowConstants:
         ("e16.whatsapp.net", 443),
         )
 
-    WHATSAPP_BROADCAST_SERVER = "broadcast"
     WHATSAPP_SERVER = "s.whatsapp.net"
     WHATSAPP_GROUP_SERVER = "g.us"
 
