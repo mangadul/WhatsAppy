@@ -11,6 +11,7 @@ from axolotl.kdf.hkdfv3 import HKDFv3
 from axolotl.util.byteutil import ByteUtil
 import binascii
 import base64
+
 class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
     '''
     <message t="{{TIME_STAMP}}" from="{{CONTACT_JID}}"
@@ -43,7 +44,6 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
         out += "IP: %s\n" % self.ip
         out += "File Size: %s\n" % self.size
         out += "File name: %s\n" % self.fileName
-        out += "File %s encrypted\n" % "is" if self.isEncrypted() else "is NOT"
         return out
 
     def decrypt(self, encimg, refkey):
@@ -74,6 +74,9 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
     def getMimeType(self):
         return self.mimeType
 
+	def getFileName(self):
+		return self.fileName
+
     def getExtension(self):
         return MimeTools.getExtension(self.mimeType)
 
@@ -85,7 +88,6 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
         self.size       = int(size)
         self.fileName   = fileName
         self.mediaKey   = mediaKey
-        self.cryptKeys  = None
 
     def toProtocolTreeNode(self):
         node = super(DownloadableMediaMessageProtocolEntity, self).toProtocolTreeNode()
@@ -126,17 +128,8 @@ class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
         url = builder.get("url")
         ip = builder.get("ip")
         assert url, "Url is required"
-        mimeType = builder.get("mimetype", MimeTools.getMIME(builder.getOriginalFilepath()))
+        mimeType = builder.get("mimetype", MimeTools.getMIME(builder.getOriginalFilepath())[0])
         filehash = WATools.getFileHashForUpload(builder.getFilepath())
         size = os.path.getsize(builder.getFilepath())
         fileName = os.path.basename(builder.getFilepath())
         return DownloadableMediaMessageProtocolEntity(builder.mediaType, mimeType, filehash, url, ip, size, fileName, to = builder.jid, preview = builder.get("preview"))
-
-    @staticmethod
-    def fromFilePath(fpath, url, mediaType, ip, to, mimeType = None, preview = None, filehash = None, filesize = None):
-        mimeType = mimeType or MimeTools.getMIME(fpath)
-        filehash = filehash or WATools.getFileHashForUpload(fpath)
-        size = filesize or os.path.getsize(fpath)
-        fileName = os.path.basename(fpath)
-
-        return DownloadableMediaMessageProtocolEntity(mediaType, mimeType, filehash, url, ip, size, fileName, to = to, preview = preview)

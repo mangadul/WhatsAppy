@@ -1,5 +1,8 @@
 from yowsup.structs import ProtocolEntity, ProtocolTreeNode
 from .message_media_downloadable import DownloadableMediaMessageProtocolEntity
+from .builder_message_media_downloadable import DownloadableMediaMessageBuilder
+import mimetypes
+
 class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtocolEntity):
     '''
     <message t="{{TIME_STAMP}}" from="{{CONTACT_JID}}"
@@ -23,12 +26,12 @@ class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
     '''
     def __init__(self,
             mimeType, fileHash, url, ip, size, fileName,
-            abitrate, acodec, asampfreq, duration, encoding, origin, seconds, mediaKey = None,
+            abitrate, acodec, asampfreq, duration, encoding, origin, seconds,
             _id = None, _from = None, to = None, notify = None, timestamp = None,
             participant = None, preview = None, offline = None, retry = None):
 
         super(AudioDownloadableMediaMessageProtocolEntity, self).__init__("audio",
-            mimeType, fileHash, url, ip, size, fileName, mediaKey, None,
+            mimeType, fileHash, url, ip, size, fileName, None,
             _id, _from, to, notify, timestamp, participant, preview, offline, retry)
         self.setAudioProps(abitrate, acodec, asampfreq, duration, encoding, origin, seconds)
 
@@ -51,7 +54,12 @@ class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
         self.encoding  = encoding
         self.origin    = origin
         self.seconds   = seconds
-        self.cryptKeys = '576861747341707020417564696f204b657973'
+
+    def getExtension(self):
+        extensions = mimetypes.guess_all_extensions(self.mimeType, False)
+        if not extensions:
+            return None
+        return extensions[0]
 
     def toProtocolTreeNode(self):
         node = super(AudioDownloadableMediaMessageProtocolEntity, self).toProtocolTreeNode()
@@ -90,11 +98,16 @@ class AudioDownloadableMediaMessageProtocolEntity(DownloadableMediaMessageProtoc
         )
         return entity
 
-
+    @staticmethod
+    def getBuilder(jid, filepath):
+        return DownloadableMediaMessageBuilder(AudioDownloadableMediaMessageProtocolEntity, jid, filepath)
 
     @staticmethod
     def fromFilePath(fpath, url, ip, to, mimeType = None, preview = None, filehash = None, filesize = None):
-        entity = DownloadableMediaMessageProtocolEntity.fromFilePath(fpath, url, DownloadableMediaMessageProtocolEntity.MEDIA_TYPE_AUDIO, ip, to, mimeType, preview)
-        entity.__class__ = AudioDownloadableMediaMessageProtocolEntity
-        entity.setAudioProps()
-        return entity
+        builder = AudioDownloadableMediaMessageProtocolEntity.getBuilder(to, fpath)
+        builder.set("url", url)
+        builder.set("ip", ip)
+        #builder.set("caption", caption)
+        builder.set("mimetype", mimeType)
+        #builder.set("dimensions", dimensions)
+        return AudioDownloadableMediaMessageProtocolEntity.fromBuilder(builder)
