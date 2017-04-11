@@ -100,7 +100,9 @@ As of January 1, 2015 yowsup is licensed under the GPLv3+: http://www.gnu.org/li
 # WhatsAppy
 WhatsApp Python - forked from https://github.com/tgalal/yowsup
 
-Added downloadable image, document, audio & video message forked from https://github.com/jlguardi/yowsup
+Added recieve downloadable image, document, audio & video message forked from https://github.com/jlguardi/yowsup
+
+Main Features: send text message, image (done), audio (done), video (done), document (on progress)
 
 Example run yowsup in your terminal:
 
