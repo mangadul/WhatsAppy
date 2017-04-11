@@ -5,9 +5,9 @@ from .protocolentities import VideoDownloadableMediaMessageProtocolEntity
 from .protocolentities import LocationMediaMessageProtocolEntity
 from .protocolentities import VCardMediaMessageProtocolEntity
 from .protocolentities import RequestUploadIqProtocolEntity, ResultRequestUploadIqProtocolEntity
-from yowsup.layers.protocol_iq.protocolentities import IqProtocolEntity, ErrorIqProtocolEntity
 from .protocolentities import DocumentDownloadableMediaMessageProtocolEntity
 from .protocolentities import UrlMediaMessageProtocolEntity
+from yowsup.layers.protocol_iq.protocolentities import IqProtocolEntity, ErrorIqProtocolEntity
 
 class YowMediaProtocolLayer(YowProtocolLayer):
 

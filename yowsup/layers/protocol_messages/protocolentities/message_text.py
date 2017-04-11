@@ -23,7 +23,7 @@ class TextMessageProtocolEntity(MessageProtocolEntity):
         self.body = body
 
     def getBody(self):
-        return self.body
+        return self.body.replace("\n","\n")
 
     def toProtocolTreeNode(self):
         node = super(TextMessageProtocolEntity, self).toProtocolTreeNode()

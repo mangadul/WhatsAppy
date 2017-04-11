@@ -391,7 +391,7 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
 
     @clicmd("Send an image with optional caption")
     def image_send(self, number, path, caption = None):
-        self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE)
+        self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE, caption)
 
     @clicmd("Send an document with optional caption")
     def document_send(self, number, path, caption = None):
