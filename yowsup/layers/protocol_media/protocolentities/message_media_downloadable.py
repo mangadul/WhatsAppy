@@ -11,6 +11,7 @@ from axolotl.kdf.hkdfv3 import HKDFv3
 from axolotl.util.byteutil import ByteUtil
 import binascii
 import base64
+
 class DownloadableMediaMessageProtocolEntity(MediaMessageProtocolEntity):
     '''
     <message t="{{TIME_STAMP}}" from="{{CONTACT_JID}}"
