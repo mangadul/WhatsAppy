@@ -109,3 +109,13 @@ Example run yowsup in your terminal:
 yowsup-cli demos --yowsup --login 6281320203981:NDkxNTIyNTI1NjAyMkBzLndoYXRzYXBwLm5ldA==
 
 to run yowsup as microservice please see https://github.com/EliasKotlyar/yowsup-microservice
+
+Command to broadcast image with caption:
+
+/bcimage send texfile.txt '/tmp/image.jpg' 'Caption Image'
+
+Exmaple textfile.txt:
+
+6281223132131
+6287231310313
+6289692028382
