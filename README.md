@@ -116,6 +116,6 @@ Command to broadcast image with caption:
 
 Exmaple textfile.txt:
 
-6281223132131
-6287231310313
+6281223132131\n
+6287231310313\n
 6289692028382
