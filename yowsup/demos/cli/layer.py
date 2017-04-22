@@ -4,11 +4,15 @@ from yowsup.layers.auth import YowAuthenticationProtocolLayer
 from yowsup.layers import YowLayerEvent, EventCallback
 from yowsup.layers.network import YowNetworkLayer
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 from yowsup.common import YowConstants
 import datetime
 import os
 import logging
 import tempfile
+import fileinput
+from time import sleep
 from yowsup.layers.protocol_groups.protocolentities      import *
 from yowsup.layers.protocol_presence.protocolentities    import *
 from yowsup.layers.protocol_messages.protocolentities    import *
@@ -392,6 +396,12 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
     @clicmd("Send an image with optional caption")
     def image_send(self, number, path, caption = None):
         self.media_send(number, path, RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE, caption)
+
+    @clicmd("Broadcast Image with caption")
+    def bcimage_send(self, pathnumber, path, caption = None):
+        for number in fileinput.input([pathnumber]):
+            self.media_send(number.rstrip('\n'), path, RequestUploadIqProtocolEntity.MEDIA_TYPE_IMAGE, caption)
+            sleep(1)
 
     @clicmd("Send an document with optional caption")
     def document_send(self, number, path, caption = None):
