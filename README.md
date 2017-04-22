@@ -115,7 +115,6 @@ Command to broadcast image with caption:
 /bcimage send texfile.txt '/tmp/image.jpg' 'Caption Image'
 
 Example textfile.txt:
-
 6281223132131
 6287231310313
 6289692028382
