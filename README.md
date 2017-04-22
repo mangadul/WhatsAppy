@@ -115,6 +115,114 @@ Command to broadcast image with caption:
 /bcimage send texfile.txt '/tmp/image.jpg' 'Caption Image'
 
 Example textfile.txt:
+```
 6281223132131
 6287231310313
 6289692028382
+```
+
+## yowsup-cli
+
+yowsup-cli is a command line interface to Yowsup library. It provides you with the options of registration, and provides a few demos such as a command line client
+
+```
+$ yowsup-cli
+
+Available commands:
+===================
+demos, registration, version
+```
+
+### yowsup-cli registration
+
+```
+$ yowsup-cli registration --help
+
+usage: registration [-h] [-v] [-d] [--help-config] [-c CONFIG] [-m MCC]
+                    [-n MNC] [-p PHONE] [-C CC] [-r (sms|voice)] [-R code]
+
+WhatsApp Registration options
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         Print version info and exit
+  -d, --debug           Show debug messages
+  --help-config         Prints a config file sample
+
+Configuration options:
+  Config file is optional. Other configuration arguments have higher
+  priority if given, and will override those specified in the config file
+
+  -c CONFIG, --config CONFIG
+                        Path to config file. If this is not set then you must
+                        set at least --phone and --cc arguments
+  -m MCC, --mcc MCC     Mobile Country Code. Check your mcc here:
+                        https://en.wikipedia.org/wiki/Mobile_country_code
+  -n MNC, --mnc MNC     Mobile Network Code. Check your mnc from
+                        https://en.wikipedia.org/wiki/Mobile_country_code
+  -p PHONE, --phone PHONE
+                        Your full phone number including the country code you
+                        defined in 'cc', without preceeding '+' or '00'
+  -C CC, --cc CC        Country code. See http://www.ipipi.com/help/telephone-
+                        country-codes.htm. This is now required
+
+Modes:
+  -r (sms|voice), --requestcode (sms|voice)
+                        Request the digit registration code from Whatsapp.
+  -R code, --register code
+                        Register account on Whatsapp using the code you
+                        previously received
+
+```
+
+
+WhatsApp registration involves 2 steps. First you need to request a registration code. And then you resume the registration with code you got.
+
+Example:
+
+```
+yowsup-cli registration --requestcode sms --phone 49XXXXXXXX --cc 49 --mcc 123 --mnc 456
+yowsup-cli registration --register 123456 --phone 49XXXXXXXX --cc 49  
+```
+
+
+###yowsup-cli demos
+```
+$ yowsup-cli demos --help
+
+usage: demos [-h] [-v] [-d] [--help-config] [-l phone:b64password] [-c CONFIG]
+             [-m] [-y] [-e] [-s phone message]
+
+Run a yowsup demo
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         Print version info and exit
+  -d, --debug           Show debug messages
+  --help-config         Prints a config file sample
+
+Configuration options for demos:
+  -l phone:b64password, --login phone:b64password
+                        WhatsApp login credentials, in the format
+                        phonenumber:password, where password is base64
+                        encoded.
+  -c CONFIG, --config CONFIG
+                        Path to config file containing authentication info.
+                        For more info about config format use --help-config
+  -m, --moxie           Enable experimental support for the new WhatsApp
+                        encryption
+
+Command line interface demo:
+  -y, --yowsup          Start the Yowsup command line client
+
+Echo client demo:
+  -e, --echo            Start the Yowsup Echo client
+
+Send client demo:
+  -s phone message, --send phone message
+                        Send a message to specified phone number, wait for
+                        server receipt and exit
+```
+
+Explore the demos yourself ;)
+Feel free to implement and send me more demos to include in yowsup-cli
